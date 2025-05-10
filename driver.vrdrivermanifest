@@ -1,0 +1,54 @@
+{
+    "alwaysActivate" : true,
+    "driver_type" : "tracker",
+    "driver_name" : "OpenTrackServer",
+    "driver_version" : "1.0.0",
+    "driver_manufacturer" : "OpenTrack",
+    "driver_model" : "Virtual Tracker",
+    "driver_serial" : "OpenTrackServer",
+    "driver_interface_version" : "1.0.0",
+    "driver_roles" : [
+        "chest",
+        "waist",
+        "left_foot",
+        "right_foot",
+        "left_knee",
+        "right_knee",
+        "left_elbow",
+        "right_elbow"
+    ],
+    "driver_trackers" : [
+        {
+            "serial" : "tracker_chest",
+            "role" : "chest"
+        },
+        {
+            "serial" : "tracker_waist",
+            "role" : "waist"
+        },
+        {
+            "serial" : "tracker_left_foot",
+            "role" : "left_foot"
+        },
+        {
+            "serial" : "tracker_right_foot",
+            "role" : "right_foot"
+        },
+        {
+            "serial" : "tracker_left_knee",
+            "role" : "left_knee"
+        },
+        {
+            "serial" : "tracker_right_knee",
+            "role" : "right_knee"
+        },
+        {
+            "serial" : "tracker_left_elbow",
+            "role" : "left_elbow"
+        },
+        {
+            "serial" : "tracker_right_elbow",
+            "role" : "right_elbow"
+        }
+    ]
+} 
