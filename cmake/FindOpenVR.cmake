@@ -1,16 +1,15 @@
-# FindOpenVR.cmake
-# Finds the OpenVR library
+# find openvr
+# finds openvr lib
 #
-# This will define the following variables
-#
-#   OpenVR_FOUND        - True if the system has OpenVR
-#   OpenVR_INCLUDE_DIRS - OpenVR include directory
-#   OpenVR_LIBRARIES    - OpenVR libraries
-#   OpenVR_VERSION      - OpenVR version
+# defines:
+#   OpenVR_FOUND        - found openvr
+#   OpenVR_INCLUDE_DIRS - include dir
+#   OpenVR_LIBRARIES    - lib files
+#   OpenVR_VERSION      - version
 
 include(FindPackageHandleStandardArgs)
 
-# Try to find OpenVR in standard locations
+# find headers
 find_path(OpenVR_INCLUDE_DIR
     NAMES openvr.h
     PATHS
@@ -23,7 +22,7 @@ find_path(OpenVR_INCLUDE_DIR
         /usr/local/include/openvr
 )
 
-# Find the library
+# find lib
 if(WIN32)
     find_library(OpenVR_LIBRARY
         NAMES openvr_api
@@ -48,7 +47,7 @@ elseif(UNIX)
     )
 endif()
 
-# Set version
+# get version
 if(EXISTS "${OpenVR_INCLUDE_DIR}/openvr.h")
     file(STRINGS "${OpenVR_INCLUDE_DIR}/openvr.h" OpenVR_VERSION_LINE
         REGEX "^#define[ \t]+k_nSteamVRVersionMajor[ \t]+[0-9]+$")
