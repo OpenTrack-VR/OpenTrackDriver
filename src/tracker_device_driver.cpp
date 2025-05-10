@@ -26,11 +26,11 @@ vr::EVRInitError TrackerDeviceDriver::Activate(uint32_t unObjectId) {
     device_index_ = unObjectId;
     is_active_ = true;
 
-    // Register input components
+    // register inputs
     vr::VRDriverInput()->CreateBooleanComponent(device_index_, "/input/trigger/click", &input_handles_[TrackerComponent_trigger_click]);
     vr::VRDriverInput()->CreateScalarComponent(device_index_, "/input/trigger/value", &input_handles_[TrackerComponent_trigger_value], vr::VRScalarType_Absolute, vr::VRScalarUnits_NormalizedOneSided);
 
-    // Set device properties
+    // set properties
     vr::VRProperties()->SetStringProperty(device_index_, vr::Prop_ModelNumber_String, model_number_.c_str());
     vr::VRProperties()->SetStringProperty(device_index_, vr::Prop_SerialNumber_String, serial_number_.c_str());
     vr::VRProperties()->SetInt32Property(device_index_, vr::Prop_DeviceClass_Int32, device_class_);
@@ -48,7 +48,7 @@ void TrackerDeviceDriver::Deactivate() {
 }
 
 void TrackerDeviceDriver::EnterStandby() {
-    // Optional: Implement standby mode
+    // standby mode
 }
 
 void* TrackerDeviceDriver::GetComponent(const char* pchComponentNameAndVersion) {
@@ -77,10 +77,10 @@ void TrackerDeviceDriver::RunFrame() {
     if (!is_active_ || !is_connected_)
         return;
 
-    // Update device properties
+    // update properties
     vr::VRProperties()->SetBoolProperty(device_index_, vr::Prop_DeviceIsWireless_Bool, is_connected_);
     
-    // Update input components if needed
+    // update inputs
     // vr::VRDriverInput()->UpdateBooleanComponent(input_handles_[TrackerComponent_trigger_click], false, 0.0);
     // vr::VRDriverInput()->UpdateScalarComponent(input_handles_[TrackerComponent_trigger_value], 0.0f, 0.0);
 } 

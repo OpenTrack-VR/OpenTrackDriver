@@ -41,7 +41,7 @@ void TrackerUDPServer::Stop() {
 }
 
 void TrackerUDPServer::HandlePosePacket(const UdpPosePacket& packet) {
-    // Null-terminate serial just in case
+    // null terminate
     char serial[17];
     strncpy(serial, packet.serial, 16);
     serial[16] = '\0';
@@ -91,13 +91,13 @@ void TrackerUDPServer::RunServer() {
     }
     std::cout << "UDP server listening on port " << port_ << std::endl;
     while (running_) {
-        char buffer[1024]; // Large enough for batch packet
+        char buffer[1024]; // batch buffer
         sockaddr_in cliaddr{};
         socklen_t len = sizeof(cliaddr);
         int n = recvfrom(sockfd, buffer, sizeof(buffer), 0, (struct sockaddr*)&cliaddr, &len);
         
         if (n >= sizeof(UdpPosePacket)) {
-            // Check if this is a batch packet
+            // check batch
             if (n >= sizeof(UdpBatchPacket)) {
                 const UdpBatchPacket* batch = reinterpret_cast<const UdpBatchPacket*>(buffer);
                 if (batch->num_devices > 0 && batch->num_devices <= 8) {
@@ -106,7 +106,7 @@ void TrackerUDPServer::RunServer() {
                     }
                 }
             } else {
-                // Single pose packet
+                // single packet
                 const UdpPosePacket* packet = reinterpret_cast<const UdpPosePacket*>(buffer);
                 HandlePosePacket(*packet);
             }
