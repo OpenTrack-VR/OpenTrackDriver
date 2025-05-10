@@ -13,86 +13,86 @@
 
 namespace vr {
 
-MyDeviceProvider::MyDeviceProvider() {
-    // Start the UDP server
-    if (!TrackerUDPServer::GetInstance().Start()) {
-        std::cerr << "Failed to start UDP tracker server" << std::endl;
+// device provider
+class MyDeviceProvider : public IServerTrackedDeviceProvider {
+public:
+    MyDeviceProvider() : m_pTrackerServer(nullptr) {}
+
+    EVRInitError Init(IVRDriverContext* pDriverContext) override {
+        VR_INIT_SERVER_DRIVER_CONTEXT(pDriverContext);
+        
+        // init server
+        m_pTrackerServer = std::make_unique<TrackerUDPServer>();
+        if (!m_pTrackerServer->Initialize()) {
+            return VRInitError_Driver_Failed;
+        }
+
+        // add devices
+        AddDevices();
+        
+        return VRInitError_None;
     }
-}
 
-MyDeviceProvider::~MyDeviceProvider() {
-    // Stop the UDP server
-    TrackerUDPServer::GetInstance().Stop();
-}
-
-EVRInitError MyDeviceProvider::Init(IVRDriverContext* pDriverContext) {
-    VR_INIT_SERVER_DRIVER_CONTEXT(pDriverContext);
-
-    // Create and register trackers
-    auto waist_tracker = std::make_shared<TrackerDeviceDriver>("OpenTrackServer_Waist", "OpenTrackServer", TrackedDeviceClass_GenericTracker);
-    auto left_foot_tracker = std::make_shared<TrackerDeviceDriver>("OpenTrackServer_LeftFoot", "OpenTrackServer", TrackedDeviceClass_GenericTracker);
-    auto right_foot_tracker = std::make_shared<TrackerDeviceDriver>("OpenTrackServer_RightFoot", "OpenTrackServer", TrackedDeviceClass_GenericTracker);
-    auto left_knee_tracker = std::make_shared<TrackerDeviceDriver>("OpenTrackServer_LeftKnee", "OpenTrackServer", TrackedDeviceClass_GenericTracker);
-    auto right_knee_tracker = std::make_shared<TrackerDeviceDriver>("OpenTrackServer_RightKnee", "OpenTrackServer", TrackedDeviceClass_GenericTracker);
-    auto left_elbow_tracker = std::make_shared<TrackerDeviceDriver>("OpenTrackServer_LeftElbow", "OpenTrackServer", TrackedDeviceClass_GenericTracker);
-    auto right_elbow_tracker = std::make_shared<TrackerDeviceDriver>("OpenTrackServer_RightElbow", "OpenTrackServer", TrackedDeviceClass_GenericTracker);
-    auto chest_tracker = std::make_shared<TrackerDeviceDriver>("OpenTrackServer_Chest", "OpenTrackServer", TrackedDeviceClass_GenericTracker);
-
-    // Register trackers with the API
-    TrackerAPI::GetInstance().RegisterTracker("OpenTrackServer_Waist", waist_tracker);
-    TrackerAPI::GetInstance().RegisterTracker("OpenTrackServer_LeftFoot", left_foot_tracker);
-    TrackerAPI::GetInstance().RegisterTracker("OpenTrackServer_RightFoot", right_foot_tracker);
-    TrackerAPI::GetInstance().RegisterTracker("OpenTrackServer_LeftKnee", left_knee_tracker);
-    TrackerAPI::GetInstance().RegisterTracker("OpenTrackServer_RightKnee", right_knee_tracker);
-    TrackerAPI::GetInstance().RegisterTracker("OpenTrackServer_LeftElbow", left_elbow_tracker);
-    TrackerAPI::GetInstance().RegisterTracker("OpenTrackServer_RightElbow", right_elbow_tracker);
-    TrackerAPI::GetInstance().RegisterTracker("OpenTrackServer_Chest", chest_tracker);
-
-    // Add trackers to the device list
-    trackers_.push_back(waist_tracker);
-    trackers_.push_back(left_foot_tracker);
-    trackers_.push_back(right_foot_tracker);
-    trackers_.push_back(left_knee_tracker);
-    trackers_.push_back(right_knee_tracker);
-    trackers_.push_back(left_elbow_tracker);
-    trackers_.push_back(right_elbow_tracker);
-    trackers_.push_back(chest_tracker);
-
-    return VRInitError_None;
-}
-
-void MyDeviceProvider::Cleanup() {
-    // Unregister all trackers
-    TrackerAPI::GetInstance().UnregisterTracker("OpenTrackServer_Waist");
-    TrackerAPI::GetInstance().UnregisterTracker("OpenTrackServer_LeftFoot");
-    TrackerAPI::GetInstance().UnregisterTracker("OpenTrackServer_RightFoot");
-    TrackerAPI::GetInstance().UnregisterTracker("OpenTrackServer_LeftKnee");
-    TrackerAPI::GetInstance().UnregisterTracker("OpenTrackServer_RightKnee");
-    TrackerAPI::GetInstance().UnregisterTracker("OpenTrackServer_LeftElbow");
-    TrackerAPI::GetInstance().UnregisterTracker("OpenTrackServer_RightElbow");
-    TrackerAPI::GetInstance().UnregisterTracker("OpenTrackServer_Chest");
-
-    trackers_.clear();
-}
-
-void MyDeviceProvider::RunFrame() {
-    for (auto& tracker : trackers_) {
-        tracker->RunFrame();
+    void Cleanup() override {
+        // cleanup server
+        if (m_pTrackerServer) {
+            m_pTrackerServer->Shutdown();
+            m_pTrackerServer.reset();
+        }
     }
-}
 
-const char* const* MyDeviceProvider::GetInterfaceVersions() {
-    return k_InterfaceVersions;
-}
+    const char* const* GetInterfaceVersions() override {
+        return k_InterfaceVersions;
+    }
 
-bool MyDeviceProvider::ShouldBlockStandbyMode() {
-    return false;
-}
+    void RunFrame() override {
+        // update devices
+        if (m_pTrackerServer) {
+            m_pTrackerServer->Update();
+        }
+    }
 
-void MyDeviceProvider::EnterStandby() {
-}
+    bool ShouldBlockStandbyMode() override { return false; }
+    void EnterStandby() override {}
+    void LeaveStandby() override {}
 
-void MyDeviceProvider::LeaveStandby() {
+private:
+    void AddDevices() {
+        // add hmd
+        auto hmd = std::make_shared<TrackerDeviceDriver>(k_unTrackedDeviceIndex_Hmd);
+        VRServerDriverHost()->TrackedDeviceAdded(hmd->GetSerialNumber().c_str(), TrackedDeviceClass_HMD, hmd.get());
+        m_vecTrackedDevices.push_back(hmd);
+
+        // add controllers
+        auto leftController = std::make_shared<TrackerDeviceDriver>(k_unTrackedDeviceIndex_Controller_Left);
+        VRServerDriverHost()->TrackedDeviceAdded(leftController->GetSerialNumber().c_str(), TrackedDeviceClass_Controller, leftController.get());
+        m_vecTrackedDevices.push_back(leftController);
+
+        auto rightController = std::make_shared<TrackerDeviceDriver>(k_unTrackedDeviceIndex_Controller_Right);
+        VRServerDriverHost()->TrackedDeviceAdded(rightController->GetSerialNumber().c_str(), TrackedDeviceClass_Controller, rightController.get());
+        m_vecTrackedDevices.push_back(rightController);
+
+        // add trackers
+        for (int i = 0; i < 5; i++) {
+            auto tracker = std::make_shared<TrackerDeviceDriver>(k_unTrackedDeviceIndex_Other_Start + i);
+            VRServerDriverHost()->TrackedDeviceAdded(tracker->GetSerialNumber().c_str(), TrackedDeviceClass_GenericTracker, tracker.get());
+            m_vecTrackedDevices.push_back(tracker);
+        }
+    }
+
+    std::unique_ptr<TrackerUDPServer> m_pTrackerServer;
+    std::vector<std::shared_ptr<TrackerDeviceDriver>> m_vecTrackedDevices;
+};
+
+// driver entry
+HMD_DLL_EXPORT void* HmdDriverFactory(const char* pInterfaceName, int* pReturnCode) {
+    if (0 == strcmp(IServerTrackedDeviceProvider_Version, pInterfaceName)) {
+        return new MyDeviceProvider();
+    }
+    if (pReturnCode) {
+        *pReturnCode = VRInitError_Init_InterfaceNotFound;
+    }
+    return nullptr;
 }
 
 } // namespace vr

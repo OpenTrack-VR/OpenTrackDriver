@@ -4,13 +4,13 @@ project(OpenTrackServer)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Add cmake modules path
+# add modules
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
-# Find required packages
+# find packages
 find_package(OpenVR REQUIRED)
 
-# Add driver source files
+# add sources
 set(DRIVER_SOURCES
     src/driver.cpp
     src/tracker_device_driver.cpp
@@ -18,26 +18,26 @@ set(DRIVER_SOURCES
     src/tracker_udp_server.cpp
 )
 
-# Create the driver library
+# create lib
 add_library(${PROJECT_NAME} SHARED ${DRIVER_SOURCES})
 
-# Include directories
+# add includes
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${OpenVR_INCLUDE_DIRS}
     ${CMAKE_CURRENT_SOURCE_DIR}/external/openvr/headers
 )
 
-# Link libraries
+# link libs
 target_link_libraries(${PROJECT_NAME} PRIVATE
     ${OpenVR_LIBRARIES}
 )
 
-# Set output directories
+# set paths
 set(DIST_DIR "${CMAKE_BINARY_DIR}/dist")
 set(DRIVER_DIR "${DIST_DIR}/driver_${PROJECT_NAME}")
 
-# Platform-specific output name and paths
+# set output
 if(WIN32)
     set_target_properties(${PROJECT_NAME} PROPERTIES
         OUTPUT_NAME "driver_${PROJECT_NAME}"
@@ -56,21 +56,21 @@ else()
     )
 endif()
 
-# Create distribution directory structure
+# create dist
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E make_directory "${DRIVER_DIR}"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
         "${CMAKE_CURRENT_SOURCE_DIR}/driver.vrdrivermanifest"
         "${DRIVER_DIR}/"
-    # Copy the appropriate install script to the root dist folder
+    # copy install script
     $<$<PLATFORM_ID:Windows>:
         ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/install_windows.bat" "${DIST_DIR}/install_windows.bat">
     $<$<NOT:$<PLATFORM_ID:Windows>>:
         ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/install_linux.sh" "${DIST_DIR}/install_linux.sh">
-    COMMENT "Creating distribution directory structure and copying install script to dist root"
+    COMMENT "creating dist"
 )
 
-# Create install rules
+# install rules
 install(TARGETS ${PROJECT_NAME}
     RUNTIME DESTINATION "driver_${PROJECT_NAME}/bin/win64"
     LIBRARY DESTINATION "driver_${PROJECT_NAME}/bin"
@@ -80,16 +80,16 @@ install(FILES driver.vrdrivermanifest
     DESTINATION "driver_${PROJECT_NAME}"
 )
 
-# Add custom target for creating distribution package
+# create dist
 add_custom_target(dist
     COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${DRIVER_DIR}"
         "${DIST_DIR}/driver_${PROJECT_NAME}"
-    COMMENT "Creating distribution package"
+    COMMENT "creating dist"
     DEPENDS ${PROJECT_NAME}
 )
 
-# Print distribution information after build
+# print info
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E echo "Distribution package created in: ${DIST_DIR}"
 ) 
