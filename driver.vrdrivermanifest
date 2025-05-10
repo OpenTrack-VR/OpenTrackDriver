@@ -1,7 +1,7 @@
 {
     "alwaysActivate" : true,
     "driver_type" : "tracker",
-    "driver_name" : "OpenTrackServer",
+    "driver_name" : "OpenTrackDriver",
     "driver_version" : "1.0.0",
     "driver_manufacturer" : "OpenTrack",
     "driver_model" : "Virtual Tracker",
