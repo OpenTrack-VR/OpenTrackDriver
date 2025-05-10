@@ -15,15 +15,15 @@ enum class DeviceType : uint8_t {
 
 #pragma pack(push, 1)
 struct UdpPosePacket {
-    DeviceType device_type;  // Type of device (1 byte)
-    char serial[16];        // Device serial (16 bytes)
-    float pos[3];          // Position x,y,z (12 bytes)
-    float rot[4];          // Rotation w,x,y,z (16 bytes)
+    DeviceType device_type;  // device type
+    char serial[16];        // device serial
+    float pos[3];          // position xyz
+    float rot[4];          // rotation wxyz
 };
 
 struct UdpBatchPacket {
-    uint8_t num_devices;    // Number of devices in batch (1 byte)
-    UdpPosePacket devices[8]; // Up to 8 devices per batch
+    uint8_t num_devices;    // device count
+    UdpPosePacket devices[8]; // device batch
 };
 #pragma pack(pop)
 

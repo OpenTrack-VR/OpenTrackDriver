@@ -19,27 +19,27 @@ class TrackerAPI {
 public:
     static TrackerAPI& GetInstance();
 
-    // Register a tracker with the API
+    // register tracker
     void RegisterTracker(const std::string& serial_number, std::shared_ptr<class TrackerDeviceDriver> tracker);
     
-    // Unregister a tracker
+    // unregister tracker
     void UnregisterTracker(const std::string& serial_number);
     
-    // Update tracker pose
+    // update pose
     bool UpdateTrackerPose(const std::string& serial_number, 
                           const HmdVector3_t& position, 
                           const HmdQuaternion_t& rotation);
 
-    // Get HMD pose
+    // get hmd
     DevicePose GetHMDPose() const;
     
-    // Get controller pose
+    // get controller
     DevicePose GetControllerPose(bool is_left) const;
     
-    // Update HMD pose
+    // update hmd
     void UpdateHMDPose(const HmdVector3_t& position, const HmdQuaternion_t& rotation);
     
-    // Update controller pose
+    // update controller
     void UpdateControllerPose(bool is_left, const HmdVector3_t& position, const HmdQuaternion_t& rotation);
 
 private:
