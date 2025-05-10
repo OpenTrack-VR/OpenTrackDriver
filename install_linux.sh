@@ -1,15 +1,15 @@
 #!/bin/bash
 set -e
 
-# Script to install OpenTrackServer driver for SteamVR on Linux
+# Script to install OpenTrackDriver for SteamVR on Linux
 # This driver now uses a high-performance UDP protocol (port 9000 by default) for all tracking data.
 # No HTTP/JSON server is included or required.
-echo "Installing OpenTrackServer driver for SteamVR (UDP-only version)..."
+echo "Installing OpenTrackDriver for SteamVR (UDP-only version)..."
 
 echo "Please run this script from the root dist directory (e.g., build/dist)."
 
 # Check if driver directory exists
-if [ ! -d "driver_OpenTrackServer" ]; then
+if [ ! -d "driver_OpenTrackDriver" ]; then
     echo "Error: Driver directory not found. Please make sure you are running this script from the dist directory."
     exit 1
 fi
@@ -29,8 +29,8 @@ mkdir -p "$STEAMVR_DRIVERS_DIR"
 
 # Copy the driver
 echo "Copying driver to SteamVR drivers directory..."
-cp -r "driver_OpenTrackServer" "$STEAMVR_DRIVERS_DIR/"
+cp -r "driver_OpenTrackDriver" "$STEAMVR_DRIVERS_DIR/"
 
 echo "Installation complete!"
-echo "The OpenTrackServer driver now uses UDP on port 9000 for all tracking data."
+echo "The OpenTrackDriver now uses UDP on port 9000 for all tracking data."
 echo "Please restart SteamVR to use the driver." 

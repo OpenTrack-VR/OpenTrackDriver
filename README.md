@@ -1,6 +1,6 @@
-# OpenTrackServer
+# OpenTrackDriver
 
-OpenTrackServer is a SteamVR driver that uses a high-performance UDP protocol for tracking data. It supports HMD, controllers, and multiple trackers.
+OpenTrackDriver is a SteamVR driver component of the OpenTrack full body app. It's Job is to send the Calculated Tracking Data from the OpenTrackServer to SteamVR
 
 ## Features
 
@@ -20,8 +20,8 @@ OpenTrackServer is a SteamVR driver that uses a high-performance UDP protocol fo
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/OpenTrackServer.git
-   cd OpenTrackServer
+   git clone https://github.com/OpenTrack-VR/OpenTrackDriver.git
+   cd OpenTrackDriver
    ```
 
 2. Create a build directory and build the project:
@@ -52,13 +52,17 @@ OpenTrackServer is a SteamVR driver that uses a high-performance UDP protocol fo
    install_windows.bat
    ```
 
-## Usage
-
-The driver uses UDP on port 9000 for all tracking data. No HTTP/JSON server is included or required.
-
 ## License
 
-[Your License Here]
+This project is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0) - see the [LICENSE](LICENSE) file for details.
+
+### What this means for you:
+
+- You are free to use, modify, and distribute this software
+- You must include the original copyright notice and license
+- If you modify the code, you must share your changes under the same license
+- If you use this code in a network service, you must share your modifications
+- You cannot use this code in closed-source commercial products without permission
 
 ## Contributing
 
