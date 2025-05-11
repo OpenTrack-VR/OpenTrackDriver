@@ -1,7 +1,7 @@
-# OpenTrackServer UDP API Documentation
+# OpenTrackDriver UDP API Documentation
 
 ## Overview
-The OpenTrackServer provides a high-performance UDP-based API for sending tracking data to SteamVR. The server listens on port 9000 by default and accepts pose data for various VR devices including trackers, HMD, and controllers.
+The OpenTrackDriver uses UDP to receive tracking data for SteamVR. The driver listens on port 9000 by default and accepts pose data for various VR devices including trackers, HMD, and controllers.
 
 ## Protocol Specification
 
