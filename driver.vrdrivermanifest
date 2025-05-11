@@ -5,7 +5,7 @@
     "driver_version" : "1.0.0",
     "driver_manufacturer" : "OpenTrack",
     "driver_model" : "Virtual Tracker",
-    "driver_serial" : "OpenTrackServer",
+    "driver_serial" : "OpenTrackDriver",
     "driver_interface_version" : "1.0.0",
     "driver_roles" : [
         "chest",
